@@ -32,7 +32,7 @@ type ExampleBase struct {
 func Seed(seedFilePath string) (*[]ExampleBase, error) {
 	genB, err := ioutil.ReadFile(seedFilePath)
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
 	examples := make([]ExampleBase, 0)
 	errParse := json.Unmarshal(genB, &examples)
@@ -45,13 +45,13 @@ func Seed(seedFilePath string) (*[]ExampleBase, error) {
 
 func init() {
 	filePath := Config.Seed.SeedFile
-	if len(filePath) == 0 {
+	if len(filePath) == 0 || Config.Seed.Seed == false {
 		// filePath = path.Join("../", "generate.jsonn")
-		log.Println("Seedfile not specific, skip seed.")
+		log.Println("Seed skipped.")
 		return
 	}
 	examples, _ := Seed(filePath)
-	if len(*examples) > 0 {
+	if examples != nil && len(*examples) > 0 {
 		// b, _ := json.Marshal(examples)
 		colc := helper.ConnectDB("examples")
 		docs := make([]interface{}, len(*examples))
@@ -64,5 +64,7 @@ func init() {
 			panic(err)
 		}
 		log.Println("successfuly seed", imr.InsertedIDs)
+	} else {
+		log.Println("seed 0")
 	}
 }

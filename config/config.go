@@ -29,6 +29,7 @@ type AppInfo struct {
 
 // Seed is the expression that yaml is configured in struct
 type Seed struct {
+	Seed     bool   `yaml:"seed"`
 	SeedFile string `yaml:"seed_file"`
 }
 
