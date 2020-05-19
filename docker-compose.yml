@@ -1,0 +1,25 @@
+version: "3.2"
+
+services:
+
+  mongo:
+    restart: always
+    image: mongo
+    ports: 
+      - 27017:27017
+
+  mongoexpress:
+    restart: always
+    image: mongo-express
+    ports:
+        - "8081:8081"
+    links:
+        - mongo
+  app:
+    restart: always
+    build: 
+      context: .
+    ports: 
+      - "8080:8080"
+    depends_on: 
+      - mongo  

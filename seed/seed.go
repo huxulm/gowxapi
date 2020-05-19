@@ -1,0 +1,68 @@
+package seed
+
+import (
+	"context"
+	"encoding/json"
+	"fmt"
+	"io/ioutil"
+	"log"
+
+	"github.com/jackdon/gowxapi/config"
+	"github.com/jackdon/gowxapi/helper"
+)
+
+var Config = config.C
+
+// Seg is a segment of an example
+type Seg struct {
+	Docs, DocsRendered              string
+	Code, CodeRendered, CodeForJs   string
+	CodeEmpty, CodeLeading, CodeRun bool
+}
+
+// ExampleBase is example info extracted from gernerate.json
+type ExampleBase struct {
+	ID, Name                    *string
+	NO                          *int64
+	GoCode, GoCodeHash, URLHash *string
+	Segs                        [][]*Seg
+}
+
+// Seed is ...
+func Seed(seedFilePath string) (*[]ExampleBase, error) {
+	genB, err := ioutil.ReadFile(seedFilePath)
+	if err != nil {
+		panic(err)
+	}
+	examples := make([]ExampleBase, 0)
+	errParse := json.Unmarshal(genB, &examples)
+	if errParse != nil {
+		panic(errParse)
+	}
+	fmt.Println("Parsed length:", len(examples))
+	return &examples, nil
+}
+
+func init() {
+	filePath := Config.Seed.SeedFile
+	if len(filePath) == 0 {
+		// filePath = path.Join("../", "generate.jsonn")
+		log.Println("Seedfile not specific, skip seed.")
+		return
+	}
+	examples, _ := Seed(filePath)
+	if len(*examples) > 0 {
+		// b, _ := json.Marshal(examples)
+		colc := helper.ConnectDB("examples")
+		docs := make([]interface{}, len(*examples))
+		for i, exa := range *examples {
+			docs[i] = exa
+		}
+		imr, err := colc.InsertMany(context.TODO(), docs)
+		if err != nil {
+			log.Fatalln("Seed failed.")
+			panic(err)
+		}
+		log.Println("successfuly seed", imr.InsertedIDs)
+	}
+}
