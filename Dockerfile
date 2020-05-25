@@ -25,9 +25,9 @@ COPY --from=0 /go/src/github.com/jackdon/gowxapi/app .
 # 配置文件
 ENV CONFIG=/opt/conf/config.yaml
 
-VOLUME [ "/opt/conf", "/data/gowxapi/logs" ]  
+VOLUME [ "/opt/conf", "/opt/lesson", "/data/gowxapi/logs" ]  
 
-COPY config.yaml /opt/conf
+COPY --from=0 /go/src/github.com/jackdon/gowxapi/config.yaml /opt/conf/config.yaml
 
 EXPOSE 8080
 

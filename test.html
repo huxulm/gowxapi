@@ -1,0 +1,95 @@
+<html lang="zh" charset="UTF-8">
+  <body>
+    <div>Hello!</div>
+  </body>
+  <script charset="UTF-8">
+    function SocketTransport(socketAddr) {
+      'use strict';
+
+      var id = 0;
+      var outputs = {};
+      var started = {};
+      var websocket;
+      
+      websocket = new WebSocket(socketAddr);
+    
+      websocket.onclose = function() {
+        console.log('websocket connection closed');
+      };
+
+      websocket.onmessage = function(e) {
+        var m = JSON.parse(e.data);
+        var output = outputs[m.Id];
+        if (output === null)
+          return;
+        if (!started[m.Id]) {
+          output({Kind: 'start'});
+          started[m.Id] = true;
+        }
+        output({Kind: m.Kind, Body: m.Body});
+      };
+
+      function send(m) {
+        websocket.send(JSON.stringify(m));
+      }
+
+      return {
+        Run: function(body, output, options) {
+          var thisID = id+'';
+          id++;
+          outputs[thisID] = output;
+          send({Id: thisID, Kind: 'run', Body: body, Options: options});
+          return {
+            Kill: function() {
+              send({Id: thisID, Kind: 'kill'});
+            }
+          };
+        }
+      };
+    }
+  </script>
+  <script charset="UTF-8">
+
+    window.transport = SocketTransport("ws://127.0.0.1:8080/socket");
+    window.socketAddr = "ws://127.0.0.1:8080/socket";
+
+    el = document.createElement('div');
+    codeEl = document.createElement('textarea');
+    codeEl.palaceholder = "golang code...";
+    codeEl.style = "height:600px;width:800px;";
+    codeEl.rows = 50;
+    codeEl.cols = 500;
+    codeEl.value = `package main
+
+import (
+	"fmt"
+	"math/cmplx"
+)
+
+var (
+	ToBe   bool       = false
+	MaxInt uint64     = 1<<64 - 1
+	z      complex128 = cmplx.Sqrt(-5 + 12i)
+)
+
+func main() {
+	fmt.Printf("Type: %T Value: %v\\n", ToBe, ToBe)
+	fmt.Printf("Type: %T Value: %v\\n", MaxInt, MaxInt)
+	fmt.Printf("Type: %T Value: %v\\n", z, z)
+}`;
+    el.append(codeEl)
+
+    btn = document.createElement('input')
+    btn.type = "button";
+    btn.value = "send";
+    btn.addEventListener('click', function(e) {
+      window.transport.Run(codeEl.value, function(output) {
+        var outEl = document.createElement('div');
+        outEl.innerHTML = JSON.stringify(output, null, 2);
+        document.body.append(outEl);
+      }, {})
+    });
+    document.body.append(el);
+    document.body.append(btn);
+  </script>
+</html>

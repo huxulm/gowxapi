@@ -2,7 +2,9 @@ package seed
 
 import (
 	"context"
+	"go/build"
 	"log"
+	"path/filepath"
 	"testing"
 
 	"github.com/jackdon/gowxapi/helper"
@@ -30,6 +32,11 @@ func TestSeed(t *testing.T) {
 	}
 }
 
-func TestQueryPage(t *testing.T) {
-	println("test query")
+func TestSeedTourZh(t *testing.T) {
+	gopath := build.Default.GOPATH
+	tourRoot := filepath.Join(gopath, "/pkg/mod/github.com/!go-zh/tour@v0.0.0-20190515134539-b61130663b4d")
+	err := SeedTourZh(&tourRoot)
+	if err != nil {
+		log.Fatalln(err)
+	}
 }

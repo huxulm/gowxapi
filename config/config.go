@@ -10,9 +10,11 @@ import (
 
 // Config is the expression that yaml is configured in struct
 type Config struct {
-	Mongo   `yaml:"mongo"`
-	AppInfo `yaml:"app_info"`
-	Seed    `yaml:"seed"`
+	HttpListen string `yaml:"http_listen"`
+	Mongo      `yaml:"mongo"`
+	AppInfo    `yaml:"app_info"`
+	Seed       `yaml:"seed"`
+	SeedTour   `yaml:"seed_tour"`
 }
 
 // Mongo is the expression that yaml is configured in struct
@@ -31,6 +33,12 @@ type AppInfo struct {
 type Seed struct {
 	Seed     bool   `yaml:"seed"`
 	SeedFile string `yaml:"seed_file"`
+}
+
+// SeedTour is the expression that yaml is configured in struct
+type SeedTour struct {
+	Seed     bool   `yaml:"seed"`
+	TourPath string `yaml:"tour_path"`
 }
 
 // C is a global config initilized when application starts

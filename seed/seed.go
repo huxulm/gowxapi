@@ -43,7 +43,7 @@ func Seed(seedFilePath string) (*[]ExampleBase, error) {
 	return &examples, nil
 }
 
-func init() {
+func seedExamples() {
 	filePath := Config.Seed.SeedFile
 	if len(filePath) == 0 || Config.Seed.Seed == false {
 		// filePath = path.Join("../", "generate.jsonn")
@@ -67,4 +67,25 @@ func init() {
 	} else {
 		log.Println("seed 0")
 	}
+}
+
+func seedTour() {
+	seed := Config.SeedTour.Seed
+	if seed == false {
+		log.Println("Seed tour skipped.")
+		return
+	}
+	tourRoot := Config.SeedTour.TourPath
+	if len(tourRoot) == 0 {
+		log.Println("TourRoot is empty. Seed tour skipped.")
+		return
+	}
+	if err := SeedTourZh(&tourRoot); err != nil {
+		log.Println("Seed tour failed:", err)
+	}
+}
+
+func init() {
+	seedExamples()
+	seedTour()
 }
