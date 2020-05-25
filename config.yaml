@@ -11,4 +11,4 @@ seed:
   seed_file: /opt/conf/generate.json
 seed_tour:
   seed: false
-  tour_path: /Users/xulingming/go/pkg/mod/github.com/!go-zh/tour@v0.0.0-20190515134539-b61130663b4d
+  tour_path: ~/go/pkg/mod/github.com/!go-zh/tour@v0.0.0-20190515134539-b61130663b4d
