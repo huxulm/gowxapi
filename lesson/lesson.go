@@ -21,7 +21,7 @@ type File struct {
 
 // Page defines the JSON form of a tour lesson page.
 type Page struct {
-	ID      *string     `json:"id" bson:"_id"`
+	ID      *string     `json:"id" bson:"_id,omitempty"`
 	Title   string      `json:"title" bson:"title"`
 	Content string      `json:"content" bson:"content"`
 	Files   []File      `json:"files" bson:"files"`
