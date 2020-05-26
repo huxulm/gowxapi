@@ -16,7 +16,9 @@ import (
 type File struct {
 	Name    string `json:"name" bson:"name"`
 	Content string `json:"content" bson:"content"`
-	Hash    string `json:"hash" bson:"hash"`
+	// ContentHL 提供高亮代码
+	ContentHL string `json:"content_hl" bson:"content_hl,omitempty"`
+	Hash      string `json:"hash" bson:"hash"`
 }
 
 // Page defines the JSON form of a tour lesson page.

@@ -1,6 +1,7 @@
 package codesandbox
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
 	"fmt"
@@ -9,6 +10,7 @@ import (
 	"strconv"
 
 	mgp "github.com/gobeam/mongo-go-pagination"
+	"github.com/jackdon/gowxapi/api"
 	"github.com/jackdon/gowxapi/helper"
 	"github.com/jackdon/gowxapi/lesson"
 	"github.com/jackdon/gowxapi/models"
@@ -190,10 +192,22 @@ func GetLessonSectionDetail(w http.ResponseWriter, r *http.Request, ps httproute
 		log.Println(err)
 	}
 
+	// highlight code
+	highlightFilesContent(s)
 	msg := "ok"
 	code := 0
 	result := &models.Resp{Code: &code, Msg: &msg}
 	result.Data = s
 	resultB, _ := json.Marshal(s)
 	fmt.Fprintf(w, fmt.Sprint(string(resultB)))
+}
+
+func highlightFilesContent(s *lesson.Page) {
+	if s != nil {
+		for i, f := range s.Files {
+			w := new(bytes.Buffer)
+			api.HlightCode(w, f.Content)
+			s.Files[i].ContentHL = w.String()
+		}
+	}
 }

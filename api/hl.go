@@ -47,7 +47,11 @@ func Highlight(w io.Writer, source string, lexer, style string) error {
 
 // HlightCode is ...
 func HlightCode(w io.Writer, source string) {
-	lexer, style := "go", "github"
+	// lexer, style := "go", "solarized-dark"
+	// lexer, style := "go", "dracula"
+	// lexer, style := "go", "monokai"
+	lexer, style := "go", "emacs"
+	// lexer, style := "go", "github"
 	Highlight(w, source, lexer, style)
 	// quick.Highlight(w, source, lexer, "html", style)
 }
