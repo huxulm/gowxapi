@@ -11,6 +11,7 @@ import (
 // Config is the expression that yaml is configured in struct
 type Config struct {
 	HttpListen string `yaml:"http_listen"`
+	WsOrigin   string `yaml:"ws_origin"`
 	Mongo      `yaml:"mongo"`
 	AppInfo    `yaml:"app_info"`
 	Seed       `yaml:"seed"`

@@ -1,4 +1,5 @@
 http_listen: 127.0.0.1:8080
+ws_origin: "http,127.0.0.1:8080"
 mongo:
   # mongodb_url: mongodb://172.22.0.2:27017
   mongodb_url: mongodb://0.0.0.0:27017

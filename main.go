@@ -69,7 +69,8 @@ func main() {
 		log.Fatal(err)
 	}
 
-	origin := &url.URL{Scheme: "http", Host: host + ":" + port}
+	wsOrigin := strings.Split(config.C.WsOrigin, ",")
+	origin := &url.URL{Scheme: wsOrigin[0], Host: wsOrigin[1]}
 	router.Handler("GET", socketPath, socket.NewHandler(origin))
 	router.ServeFiles("/static/*filepath", http.Dir("./"))
 	httpAddr := host + ":" + port
