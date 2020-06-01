@@ -12,7 +12,7 @@ COPY . ./
 RUN CGO_ENABLED=0 GOARCH=amd64 GOOS=linux go build -a -o app .
 
 # Final stage:
-FROM alpine
+FROM golang:1.14.2-alpine3.11
 
 WORKDIR /root
 

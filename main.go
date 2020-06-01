@@ -49,6 +49,13 @@ func (m *Middleware) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if strings.HasSuffix(r.RequestURI, ".html") {
 		w.Header().Set("Content-Type", "text/html;charset=UTF-8")
 	}
+	if strings.HasPrefix(r.RequestURI, "/socket") {
+		origin := r.Header.Get("Origin")
+		if len(origin) > 0 {
+			wsOrigin := strings.Split(config.C.WsOrigin, ",")
+			r.Header.Set("Origin", strings.Join(wsOrigin, "://"))
+		}
+	}
 	m.next.ServeHTTP(w, r)
 	// We can
 }

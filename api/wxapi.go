@@ -38,13 +38,21 @@ func Code2Session(jsCode string) (*m.WxRespCode2Session, error) {
 
 // GetAccessToken 获取小程序全局唯一后台接口调用凭据（access_token）。
 // 调用绝大多数后台接口时都需使用 access_token，开发者需要进行妥善保存。
-func GetAccessToken() (*m.WxRespAccessToken, error) {
+func GetAccessToken(appID, secret string) (*m.WxRespAccessToken, error) {
 	var respData *m.WxRespAccessToken
 	// Create a Resty Client
 	client := resty.New()
 	qp := make(map[string]string)
-	qp["appid"] = APPID
-	qp["secret"] = SECRET
+	if len(APPID) == 0 {
+		qp["appid"] = appID
+	} else {
+		qp["appid"] = APPID
+	}
+	if len(SECRET) == 0 {
+		qp["secret"] = secret
+	} else {
+		qp["secret"] = SECRET
+	}
 	qp["grant_type"] = "client_credential"
 	resp, err := client.R().
 		EnableTrace().

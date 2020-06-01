@@ -49,7 +49,7 @@ func init() {
 	C = &Config{}
 	configFilePath := os.Getenv("CONFIG")
 	if len(configFilePath) == 0 {
-		configFilePath = "config.yaml"
+		configFilePath = "../config.yaml"
 	}
 	confB, err := ioutil.ReadFile(configFilePath)
 	if err != nil {
