@@ -5,11 +5,15 @@ mongo:
   mongodb_url: mongodb://0.0.0.0:27017
   db_name: testingwx
 app_info:
-  appid: wxd3947eed2c6b8cbb
-  secret: 5bd94e19ae965a3b8957983de0ba2284
+  appid:
+  secret:
 seed:
   seed: false
   seed_file: /opt/conf/generate.json
 seed_tour:
   seed: false
   tour_path: ~/go/pkg/mod/github.com/!go-zh/tour@v0.0.0-20190515134539-b61130663b4d
+static_resource:
+  fonts_path: ./resource/fonts
+  logo_path: ./test/logo.png
+  avatar_path: ./test/avatar.png

@@ -10,12 +10,20 @@ import (
 
 // Config is the expression that yaml is configured in struct
 type Config struct {
-	HttpListen string `yaml:"http_listen"`
-	WsOrigin   string `yaml:"ws_origin"`
-	Mongo      `yaml:"mongo"`
-	AppInfo    `yaml:"app_info"`
-	Seed       `yaml:"seed"`
-	SeedTour   `yaml:"seed_tour"`
+	HttpListen     string `yaml:"http_listen"`
+	WsOrigin       string `yaml:"ws_origin"`
+	Mongo          `yaml:"mongo"`
+	AppInfo        `yaml:"app_info"`
+	Seed           `yaml:"seed"`
+	SeedTour       `yaml:"seed_tour"`
+	StaticResource `yaml:"static_resource"`
+}
+
+// StaticResource defines static resource for this app
+type StaticResource struct {
+	LogoPath   string `yaml:"logo_path"`
+	AvatarPath string `yaml:"avatar_path"`
+	FontsPath  string `yaml:"fonts_path"`
 }
 
 // Mongo is the expression that yaml is configured in struct
@@ -49,7 +57,7 @@ func init() {
 	C = &Config{}
 	configFilePath := os.Getenv("CONFIG")
 	if len(configFilePath) == 0 {
-		configFilePath = "../config.yaml"
+		configFilePath = "config.yaml"
 	}
 	confB, err := ioutil.ReadFile(configFilePath)
 	if err != nil {

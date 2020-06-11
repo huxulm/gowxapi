@@ -19,6 +19,10 @@ services:
     restart: always
     build: 
       context: .
+    environment:
+      - CONFIG=/opt/conf/config.yaml
+    volumes:
+      - ~/.gowxapai/conf:/opt/conf
     ports: 
       - "8080:8080"
     depends_on: 

@@ -12,6 +12,7 @@ import (
 	"github.com/alecthomas/chroma"
 	"github.com/alecthomas/chroma/formatters/html"
 	"github.com/alecthomas/chroma/lexers"
+	"github.com/alecthomas/chroma/quick"
 	"github.com/alecthomas/chroma/styles"
 	"github.com/jackdon/gowxapi/models"
 	"github.com/julienschmidt/httprouter"
@@ -54,6 +55,19 @@ func HlightCode(w io.Writer, source string) {
 	// lexer, style := "go", "github"
 	Highlight(w, source, lexer, style)
 	// quick.Highlight(w, source, lexer, "html", style)
+}
+
+// HlightCode2Html ouput hl code into full html
+func HlightCode2Html(w io.Writer, source string) {
+	// lexer, style := "go", "solarized-dark"
+	// lexer, style := "go", "dracula"
+	// lexer, style := "go", "monokai"
+	// lexer, style := "go", "emacs"
+	lexer, style := "go", "github"
+	// Highlight(w, source, lexer, style)
+	if err := quick.Highlight(w, source, lexer, "html", style); err != nil {
+		panic(err)
+	}
 }
 
 const Code = `

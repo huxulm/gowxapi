@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net"
 	"net/http"
@@ -10,6 +11,7 @@ import (
 	"github.com/jackdon/gowxapi/api"
 	"github.com/jackdon/gowxapi/api/codesandbox"
 	"github.com/jackdon/gowxapi/config"
+	"github.com/jackdon/gowxapi/helper"
 	_ "github.com/jackdon/gowxapi/helper"
 	_ "github.com/jackdon/gowxapi/seed"
 	"github.com/julienschmidt/httprouter"
@@ -45,9 +47,12 @@ func NewMiddleware(next http.Handler, message string) *Middleware {
 func (m *Middleware) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	// We can modify the request here; for simplicity, we will just log a message
 	log.Printf("Method: %s, URI: %s\n", r.Method, r.RequestURI)
-	w.Header().Set("Content-Type", "application/json")
-	if strings.HasSuffix(r.RequestURI, ".html") {
-		w.Header().Set("Content-Type", "text/html;charset=UTF-8")
+	ct := w.Header().Get("Content-Type")
+	if len(ct) == 0 {
+		w.Header().Set("Content-Type", "application/json")
+		if strings.HasSuffix(r.RequestURI, ".html") {
+			w.Header().Set("Content-Type", "text/html;charset=UTF-8")
+		}
 	}
 	if strings.HasPrefix(r.RequestURI, "/socket") {
 		origin := r.Header.Get("Origin")
@@ -70,6 +75,7 @@ func main() {
 	router.POST("/sandbox/lesson/page", codesandbox.LessonPaging)
 	router.POST("/sandbox/section/detail/:id", codesandbox.GetLessonSectionDetail)
 	router.POST("/sandbox/section/page/:lesson", codesandbox.LessonSectionPaging)
+	router.GET("/sandbox/share/page/:id", codesandbox.SharePost)
 
 	host, port, err := net.SplitHostPort(httpListen)
 	if err != nil {
@@ -84,4 +90,13 @@ func main() {
 	m := NewMiddleware(router, "middleware")
 
 	log.Fatal(http.ListenAndServe(httpAddr, m))
+
+	/* helper.InitCallback(func(msg string) {
+		fmt.Println("on main thread.")
+	}) */
+
+	for {
+		msg := <-helper.MsgChannel
+		fmt.Println("on main thread." + msg)
+	}
 }
