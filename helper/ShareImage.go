@@ -74,7 +74,7 @@ type ShareImage interface{}
 // Generate composites html, avatar and logo image bytes and
 // return a pointer of image.Image
 func Generate(code, avatar, logo []byte, userInfo map[string]string) ([]byte, error) {
-	dest := image.NewRGBA(image.Rect(0, 0, 380, 580))
+	dest := image.NewRGBA(image.Rect(0, 0, 380, 600))
 	draw2d.SetFontFolder(config.C.StaticResource.FontsPath)
 	gc := draw2dimg.NewGraphicContext(dest)
 	gc.SetFontData(draw2d.FontData{"AiNiChuanYueRenHai", 4, draw2d.FontStyleNormal})
@@ -93,15 +93,16 @@ func Generate(code, avatar, logo []byte, userInfo map[string]string) ([]byte, er
 
 	logoImgR := bytes.NewReader(logo)
 	if logImg, err := png.Decode(logoImgR); err == nil {
-		gc.Translate(240, 440)
-		gc.DrawImage(cropImage(logImg, 120))
-		gc.Translate(-240, -440)
+		logImg = resize.Resize(80, 80, logImg, resize.MitchellNetravali)
+		gc.Translate(280, 500)
+		gc.DrawImage(cropImage(logImg, 80))
+		gc.Translate(-280, -500)
 	}
 
 	avatarImgR := bytes.NewReader(avatar)
 	if avatarImg, err := jpeg.Decode(avatarImgR); err == nil {
 		// resize
-		avatarImg = resize.Resize(80, 80, avatarImg, resize.MitchellNetravali)
+		avatarImg = resize.Resize(60, 60, avatarImg, resize.MitchellNetravali)
 		gc.Translate(20, 20)
 		gc.DrawImage(cropImage(avatarImg, 80))
 
@@ -116,7 +117,7 @@ func Generate(code, avatar, logo []byte, userInfo map[string]string) ([]byte, er
 		gc.Translate(120, 76)
 		gc.SetFontSize(12)
 		gc.SetFillColor(color.Black)
-		gc.FillStringAt("邀你一起来Go golang~", 0, 25)
+		gc.FillStringAt("邀你一起Go golang~", 0, 25)
 		gc.Translate(-120, -76)
 	}
 
@@ -139,13 +140,13 @@ func cropImage(src image.Image, size int) *image.RGBA {
 		return math.Sqrt(float64((cx-x)*(cx-x) + (cy-y)*(cy-y)))
 	}
 
-	cropImg := image.NewRGBA(image.Rect(0, 0, size, size))
+	ci := image.NewRGBA(image.Rect(0, 0, size, size))
 	for x := posX; x < (posX + size); x++ {
 		for y := posY; y < (posY + size); y++ {
 			if d := clacDimension(x, y, posX+size/2, posY+size/2, size/2); float64(size/2) >= d {
-				cropImg.Set(x, y, src.At(x, y))
+				ci.Set(x, y, src.At(x, y))
 			}
 		}
 	}
-	return cropImg
+	return ci
 }

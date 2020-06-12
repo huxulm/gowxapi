@@ -13,7 +13,7 @@ COPY . ./
 RUN CGO_ENABLED=0 GOARCH=amd64 GOOS=linux go build -a -o app .
 
 # Final stage:
-FROM golang:1.14.2-alpine3.11
+FROM alpine:3.11
 
 WORKDIR /root
 
@@ -50,15 +50,20 @@ RUN mkdir -p /data/gowxapi/logs \
 
 COPY --from=1 /go/src/github.com/jackdon/gowxapi/app .
 
+# copy go env
+COPY --from=1 /usr/local/go/bin/go /usr/local/go/bin/go
+ENV GOPATH /go
+ENV PATH $GOPATH/bin:/usr/local/go/bin:$PATH
+
 # Copy wkhtmltopdf files from docker-wkhtmltopdf image
-COPY --from=wkhtmltopdf /bin/wkhtmltopdf /bin/wkhtmltopdf
+# COPY --from=wkhtmltopdf /bin/wkhtmltopdf /bin/wkhtmltopdf
 COPY --from=wkhtmltopdf /bin/wkhtmltoimage /bin/wkhtmltoimage
 COPY --from=wkhtmltopdf /bin/libwkhtmltox* /bin/
 
 # 配置文件
 ENV CONFIG=/opt/conf/config.yaml
 
-VOLUME [ "/opt/conf", "/opt/lesson", "/data/gowxapi/logs" ]  
+VOLUME [ "/opt/conf", "/opt/lesson", "/data/gowxapi/logs" ]
 
 COPY config.yaml /opt/conf/config.yaml
 
