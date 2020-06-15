@@ -28,27 +28,30 @@ RUN apk add --no-cache \
   ca-certificates \
   fontconfig \
   freetype \
-  ttf-dejavu \
-  ttf-droid \
-  ttf-freefont \
-  ttf-liberation \
-  ttf-ubuntu-font-family \
-&& apk add --no-cache --virtual .build-deps \
-  msttcorefonts-installer \
-\
-# Install microsoft fonts
-&& update-ms-fonts \
-&& fc-cache -f \
-\
-# Clean up when done
-&& rm -rf /tmp/* \
-&& apk del .build-deps 
+  # ttf-dejavu \
+  # ttf-droid \
+  # ttf-freefont \
+  # ttf-liberation \
+  # ttf-ubuntu-font-family \
+  && apk add --no-cache --virtual .build-deps \
+    msttcorefonts-installer \
+  # Install microsoft fonts
+  && update-ms-fonts \
+  # Clean up when done
+  && rm -rf /tmp/* \
+  && apk del .build-deps 
 
-# 创建目录,保存代码
+# Create directories
 RUN mkdir -p /data/gowxapi/logs \
-  && mkdir -p /opt/conf/
+  && mkdir -p /opt/conf/ \
+  && mkdir -p /usr/share/fonts/gowxapi
 
 COPY --from=1 /go/src/github.com/jackdon/gowxapi/app .
+
+# Install app fonts
+COPY ./resource/fonts/*.ttf /usr/share/fonts/gowxapi/
+
+RUN fc-cache -f && fc-list :lang=zh
 
 # copy go env
 COPY --from=1 /usr/local/go/bin/go /usr/local/go/bin/go
@@ -60,7 +63,7 @@ ENV PATH $GOPATH/bin:/usr/local/go/bin:$PATH
 COPY --from=wkhtmltopdf /bin/wkhtmltoimage /bin/wkhtmltoimage
 COPY --from=wkhtmltopdf /bin/libwkhtmltox* /bin/
 
-# 配置文件
+# Config file
 ENV CONFIG=/opt/conf/config.yaml
 
 VOLUME [ "/opt/conf", "/opt/lesson", "/data/gowxapi/logs" ]
