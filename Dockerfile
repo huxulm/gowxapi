@@ -17,6 +17,9 @@ FROM alpine:3.11
 
 WORKDIR /root
 
+ENV GOPROXY="https://mirrors.aliyun.com/goproxy/,direct" \
+  GO111MODULE=on
+
 RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories
 # Install dependencies for wkhtmltopdf
 RUN apk add --no-cache \
@@ -54,7 +57,7 @@ COPY ./resource/fonts/*.ttf /usr/share/fonts/gowxapi/
 RUN fc-cache -f && fc-list :lang=zh
 
 # copy go env
-COPY --from=1 /usr/local/go/bin/go /usr/local/go/bin/go
+COPY --from=1 /usr/local/go /usr/local/go
 ENV GOPATH /go
 ENV PATH $GOPATH/bin:/usr/local/go/bin:$PATH
 
