@@ -56,8 +56,6 @@ COPY ./resource/fonts/*.ttf /usr/share/fonts/gowxapi/
 
 RUN fc-cache -f && fc-list :lang=zh
 
-# copy go env
-COPY --from=1 /usr/local/go /usr/local/go
 ENV GOPATH /go
 ENV PATH $GOPATH/bin:/usr/local/go/bin:$PATH
 
@@ -66,9 +64,11 @@ ENV PATH $GOPATH/bin:/usr/local/go/bin:$PATH
 COPY --from=wkhtmltopdf /bin/wkhtmltoimage /bin/wkhtmltoimage
 COPY --from=wkhtmltopdf /bin/libwkhtmltox* /bin/
 
+# GO path: use external bind directory to reduce image size
+VOLUME [ "/usr/local/go" ]
+
 # Config file
 ENV CONFIG=/opt/conf/config.yaml
-
 VOLUME [ "/opt/conf", "/opt/lesson", "/data/gowxapi/logs" ]
 
 COPY config.yaml /opt/conf/config.yaml
