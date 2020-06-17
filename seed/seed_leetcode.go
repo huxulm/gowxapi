@@ -18,7 +18,7 @@ import (
 func decideSequence(dir string) int {
 	splits := strings.Split(dir, ".")
 	if len(splits) > 0 {
-		r, err := strconv.Atoi(splits[1])
+		r, err := strconv.Atoi(strings.TrimLeft(splits[0], "0"))
 		if err == nil {
 			return r
 		}

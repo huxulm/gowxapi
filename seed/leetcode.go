@@ -132,7 +132,7 @@ var (
 	titleReg     = regexp.MustCompile(`\[([\s\d.\w])+\]`)
 	descReg      = regexp.MustCompile(`\#{2}\sDescription`)
 	sumReg       = regexp.MustCompile(`\#{2}\s结语`)
-	headerReg    = regexp.MustCompile(`(#+|>+)\s`)
+	headerReg    = regexp.MustCompile(`(#+|>+)`)
 	// omit line starts with:
 	// > [!
 	// * 1
