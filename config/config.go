@@ -16,6 +16,7 @@ type Config struct {
 	AppInfo        `yaml:"app_info"`
 	Seed           `yaml:"seed"`
 	SeedTour       `yaml:"seed_tour"`
+	SeedLeetcode   `yaml:"seed_leetcode"`
 	StaticResource `yaml:"static_resource"`
 }
 
@@ -48,6 +49,11 @@ type Seed struct {
 type SeedTour struct {
 	Seed     bool   `yaml:"seed"`
 	TourPath string `yaml:"tour_path"`
+}
+
+type SeedLeetcode struct {
+	Seed         bool   `yaml:"seed"`
+	LeetcodePath string `yaml:"leetcode_path"`
 }
 
 // C is a global config initilized when application starts

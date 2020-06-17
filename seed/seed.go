@@ -85,7 +85,24 @@ func seedTour() {
 	}
 }
 
+func seedLeetcode() {
+	seed := Config.SeedLeetcode.Seed
+	if seed == false {
+		log.Println("Seed leetcode skipped.")
+		return
+	}
+	root := Config.SeedLeetcode.LeetcodePath
+	if len(root) == 0 {
+		log.Println("Leetcode root is empty. Seed Leetcode skipped.")
+		return
+	}
+	if _, err := SeedLeetcode(&root); err != nil {
+		log.Println("Seed leetcode failed:", err)
+	}
+}
+
 func init() {
 	seedExamples()
 	seedTour()
+	seedLeetcode()
 }

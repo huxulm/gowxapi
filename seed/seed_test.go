@@ -2,6 +2,7 @@ package seed
 
 import (
 	"context"
+	"fmt"
 	"go/build"
 	"log"
 	"path/filepath"
@@ -39,4 +40,13 @@ func TestSeedTourZh(t *testing.T) {
 	if err != nil {
 		log.Fatalln(err)
 	}
+}
+
+func TestSeedLeetCode(t *testing.T) {
+	root := filepath.Join("/home/bx/Public/workspace/gowxapi", ".dist")
+	ls, err := SeedLeetcode(&root)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	fmt.Println(ls)
 }

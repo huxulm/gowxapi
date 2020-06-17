@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"net"
 	"net/http"
@@ -11,7 +10,6 @@ import (
 	"github.com/jackdon/gowxapi/api"
 	"github.com/jackdon/gowxapi/api/codesandbox"
 	"github.com/jackdon/gowxapi/config"
-	"github.com/jackdon/gowxapi/helper"
 	_ "github.com/jackdon/gowxapi/helper"
 	_ "github.com/jackdon/gowxapi/seed"
 	"github.com/julienschmidt/httprouter"
@@ -89,14 +87,10 @@ func main() {
 	httpAddr := host + ":" + port
 	m := NewMiddleware(router, "middleware")
 
-	log.Fatal(http.ListenAndServe(httpAddr, m))
-
-	/* helper.InitCallback(func(msg string) {
-		fmt.Println("on main thread.")
-	}) */
-
-	for {
-		msg := <-helper.MsgChannel
-		fmt.Println("on main thread." + msg)
+	server := &http.Server{Handler: m}
+	l, err := net.Listen("tcp4", httpAddr)
+	if err != nil {
+		log.Fatal(err)
 	}
+	log.Fatal(server.Serve(l))
 }

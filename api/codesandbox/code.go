@@ -25,13 +25,16 @@ import (
 func ListSandBox(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	exampleDesc := "社区精选示例代码"
 	tourDesc := "Golang官方示例tour,带你完整的浏览"
+	leetCode := "LeetCode算法之golang解（更新😃）"
 	list := []struct {
 		Name      string `json:"name"`
 		Desc      string `json:"desc"`
+		Category  string `json:"category"`
 		DirCount  int64  `json:"dir_count"`
 		FileCount int64  `json:"file_count"`
 	}{
-		{"Go By Example", exampleDesc, 0, 0}, {"Go Tour之旅", tourDesc, 0, 0},
+		{"Go By Example", exampleDesc, "", 0, 0}, {"Go Tour之旅", tourDesc, "tour", 0, 0},
+		{"LeetCode 算法1450题", leetCode, "leetcode", 0, 0},
 	}
 	colcExample := helper.ConnectDB("examples")
 	if exmapleCount, err := colcExample.CountDocuments(context.TODO(), bson.M{}); err == nil {
