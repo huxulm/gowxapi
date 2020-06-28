@@ -74,7 +74,14 @@ type ShareImage interface{}
 // Generate composites html, avatar and logo image bytes and
 // return a pointer of image.Image
 func Generate(code, avatar, logo []byte, userInfo map[string]string) ([]byte, error) {
-	dest := image.NewRGBA(image.Rect(0, 0, 380, 600))
+	bgImgR := bytes.NewReader(code)
+	var rect image.Rectangle
+	if bgConfig, err := png.DecodeConfig(bgImgR); err == nil {
+		rect = image.Rect(0, 0, 380, 200+bgConfig.Height)
+	} else {
+		rect = image.Rect(0, 0, 380, 600)
+	}
+	dest := image.NewRGBA(rect)
 	draw2d.SetFontFolder(config.C.StaticResource.FontsPath)
 	gc := draw2dimg.NewGraphicContext(dest)
 	gc.SetFontData(draw2d.FontData{"AiNiChuanYueRenHai", 4, draw2d.FontStyleNormal})
@@ -83,8 +90,6 @@ func Generate(code, avatar, logo []byte, userInfo map[string]string) ([]byte, er
 			dest.Set(x, y, color.White)
 		}
 	}
-
-	bgImgR := bytes.NewReader(code)
 	if bgImg, err := png.Decode(bgImgR); err == nil {
 		gc.Translate(0, 160)
 		gc.DrawImage(bgImg)

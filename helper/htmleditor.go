@@ -9,7 +9,7 @@ import (
 // DefaultCSS gives a default css
 var DefaultCSS = []byte(`<meta charset="UTF-8"><style type="text/css">
 html { background: grey; padding:0; margin:0; font-size: 16px; }
-body{ padding:25px; margin:0; width: 380px; height:580px; background: whitesmoke; display:block; overflow:hidden;
+body{ padding:25px; margin:0; width: 380px; min-height:580px; background: whitesmoke; display:block; overflow:hidden;
 }
 </style>`)
 
